@@ -25,7 +25,14 @@ public class CurrencyServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String code = request.getPathInfo().substring(1);
+        String pathInfo = request.getPathInfo(), code = null;
+
+        if (pathInfo != null) {
+            code = request.getPathInfo().substring(1);
+        } else {
+            Utils.writeResponse(response, new ErrorResponse("Currency not found"), SC_NOT_FOUND);
+            return;
+        }
 
         try {
             Optional<Currency> currency = currencyDao.findByCode(code);
